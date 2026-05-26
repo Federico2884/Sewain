@@ -276,7 +276,3 @@ php artisan key:generate
 Pastikan sudah menjalankan `php artisan storage:link`.
 
 ---
-
-## Lisensi
-
-Proyek ini menggunakan lisensi **MIT**.
