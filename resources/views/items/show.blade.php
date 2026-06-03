@@ -27,7 +27,7 @@
         {{-- Image --}}
         <div>
             <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden">
-                <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
+                <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-contain">
             </div>
         </div>
 

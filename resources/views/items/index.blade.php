@@ -43,7 +43,7 @@
                class="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition group">
                 <div class="aspect-video bg-slate-100 overflow-hidden">
                     <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                         class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
                 </div>
                 <div class="p-4">
                     <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">{{ $item->category }}</span>
