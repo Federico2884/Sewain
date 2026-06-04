@@ -20,8 +20,8 @@
             <a href="{{ route('items.index') }}" class="mt-3 inline-block text-sm text-green-600 hover:underline">Mulai sewa sekarang →</a>
         </div>
     @else
-        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-            <table class="w-full text-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-x-auto">
+            <table class="w-full min-w-[680px] text-sm">
                 <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
                         <th class="text-left px-5 py-3 text-slate-500 font-medium">Barang</th>

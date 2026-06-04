@@ -11,8 +11,8 @@
         <p class="font-medium">Belum ada rental masuk.</p>
     </div>
 @else
-    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-        <table class="w-full text-sm">
+    <div class="bg-white border border-slate-200 rounded-2xl overflow-x-auto">
+        <table class="w-full min-w-[680px] text-sm">
             <thead class="bg-slate-50 border-b border-slate-200">
                 <tr>
                     <th class="text-left px-5 py-3 text-slate-500 font-medium">Barang</th>

@@ -26,7 +26,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {{-- Image --}}
         <div>
-            <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden">
+            <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 p-2">
                 <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-contain">
             </div>
         </div>
@@ -34,7 +34,7 @@
         {{-- Info --}}
         <div class="flex flex-col gap-4">
             <div>
-                <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">{{ $item->category }}</span>
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">{{ \App\Models\Item::categoryIcon($item->category) }} {{ $item->category }}</span>
                 <h1 class="text-2xl font-bold text-slate-800 mt-2">{{ $item->name }}</h1>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-yellow-400">★</span>

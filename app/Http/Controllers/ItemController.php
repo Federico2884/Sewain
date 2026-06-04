@@ -20,14 +20,16 @@ class ItemController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%');
         }
 
         $items = $query->latest()->paginate(12)->withQueryString();
 
-        $categories = Item::available()
-            ->distinct()
-            ->pluck('category');
+        // Canonical categories first, then any extras already present in the data.
+        $categories = collect(array_keys(Item::CATEGORIES))
+            ->merge(Item::query()->distinct()->pluck('category'))
+            ->unique(fn (string $name) => mb_strtolower($name))
+            ->values();
 
         return view('items.index', compact('items', 'categories'));
     }
@@ -38,9 +40,9 @@ class ItemController extends Controller
     public function show(Item $item)
     {
         $item->load('vendor');
-        $bookedDates       = $item->bookedDates();
+        $bookedDates = $item->bookedDates();
         $nextAvailableFrom = $item->nextAvailableFrom();
-        $isRentedNow       = in_array(now()->toDateString(), $bookedDates, true);
+        $isRentedNow = in_array(now()->toDateString(), $bookedDates, true);
 
         return view('items.show', compact('item', 'bookedDates', 'nextAvailableFrom', 'isRentedNow'));
     }

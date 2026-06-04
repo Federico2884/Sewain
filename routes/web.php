@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\VendorAuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\User\ChatController as UserChatController;
 use App\Http\Controllers\User\DashboardController as UserDashboard;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 // ── Public ─────────────────────────────────────────────────────────────────────
 
-Route::get('/', fn () => view('welcome'))->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('/items', [ItemController::class, 'index'])->name('items.index');
 Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
@@ -105,4 +106,4 @@ Route::middleware(['auth', 'verified'])
     });
 
 // Breeze default auth routes (login, register, password reset, etc.)
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

@@ -45,8 +45,8 @@
         @if($completedRentals->isEmpty())
             <p class="text-slate-400 text-sm">Belum ada riwayat rental.</p>
         @else
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                <table class="w-full text-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-x-auto">
+                <table class="w-full min-w-[640px] text-sm">
                     <thead class="bg-slate-50 border-b border-slate-200">
                         <tr>
                             <th class="text-left px-5 py-3 text-slate-500 font-medium">Barang</th>

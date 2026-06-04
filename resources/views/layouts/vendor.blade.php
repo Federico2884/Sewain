@@ -9,10 +9,15 @@
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
     @stack('styles')
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex" x-data="{ sidebarOpen: false }">
+
+{{-- Mobile overlay --}}
+<div x-show="sidebarOpen" x-cloak x-transition.opacity @click="sidebarOpen = false"
+     class="fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
 
 {{-- Sidebar --}}
-<aside class="w-60 bg-white border-r border-slate-200 min-h-screen flex flex-col fixed top-0 left-0 z-30">
+<aside class="w-60 bg-white border-r border-slate-200 min-h-screen flex flex-col fixed top-0 left-0 z-40 transition-transform duration-200 ease-in-out md:translate-x-0"
+       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
     <div class="px-5 py-5 border-b border-slate-100">
         <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold text-lg text-green-600">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -65,13 +70,18 @@
 </aside>
 
 {{-- Main area --}}
-<div class="flex-1 ml-60 min-h-screen flex flex-col">
-    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between">
-        <h1 class="text-lg font-semibold text-slate-800">@yield('title', 'Dashboard')</h1>
-        <div class="text-sm text-slate-400">{{ now()->translatedFormat('l, d F Y') }}</div>
+<div class="flex-1 md:ml-60 min-h-screen flex flex-col">
+    <header class="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+            <button @click="sidebarOpen = true" class="md:hidden p-1 -ml-1 text-slate-600 hover:text-green-600 shrink-0" aria-label="Buka menu">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <h1 class="text-lg font-semibold text-slate-800 truncate">@yield('title', 'Dashboard')</h1>
+        </div>
+        <div class="hidden sm:block text-sm text-slate-400 shrink-0">{{ now()->translatedFormat('l, d F Y') }}</div>
     </header>
 
-    <div class="px-8 py-0">
+    <div class="px-4 sm:px-6 lg:px-8 py-0">
         @if(session('success'))
             <div class="mt-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg text-sm flex items-start gap-2">
                 <svg class="w-5 h-5 text-green-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -86,7 +96,7 @@
         @endif
     </div>
 
-    <main class="flex-1 px-8 py-6">
+    <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6">
         @yield('content')
     </main>
 </div>

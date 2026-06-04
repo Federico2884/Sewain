@@ -15,7 +15,7 @@
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
 {{-- Navbar --}}
-<nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-40" x-data="{ mobileOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold text-xl text-green-600">
@@ -27,7 +27,8 @@
                 Sewain
             </a>
 
-            <div class="flex items-center gap-6">
+            {{-- Desktop links --}}
+            <div class="hidden md:flex items-center gap-6">
                 <a href="{{ route('items.index') }}" class="text-sm font-medium text-slate-600 hover:text-green-600 transition">Cari Barang</a>
 
                 @auth
@@ -37,10 +38,11 @@
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open"
                                 class="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-green-600 transition">
+                            <span class="w-8 h-8 rounded-full bg-green-100 text-green-700 font-semibold flex items-center justify-center text-xs">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                             <span>{{ Auth::user()->name }}</span>
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
-                        <div x-show="open" @click.away="open = false"
+                        <div x-show="open" @click.away="open = false" x-cloak x-transition
                              class="absolute right-0 mt-2 w-44 bg-white border border-slate-200 rounded-lg shadow-lg py-1 text-sm">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -53,6 +55,31 @@
                     <a href="{{ route('register') }}" class="text-sm font-semibold bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Daftar</a>
                 @endauth
             </div>
+
+            {{-- Mobile toggle --}}
+            <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 -mr-2 text-slate-600 hover:text-green-600" aria-label="Menu">
+                <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <svg x-show="mobileOpen" x-cloak class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+
+    {{-- Mobile menu --}}
+    <div x-show="mobileOpen" x-cloak x-transition class="md:hidden border-t border-slate-200 bg-white">
+        <div class="px-4 py-3 flex flex-col gap-1">
+            <a href="{{ route('items.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-green-600">Cari Barang</a>
+            @auth
+                <a href="{{ route('user.dashboard') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-green-600">Dashboard</a>
+                <a href="{{ route('user.rentals.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-green-600">Rental Saya</a>
+                <a href="{{ route('user.chats.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-green-600">Chat</a>
+                <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 mt-1 pt-1">
+                    @csrf
+                    <button type="submit" class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">Keluar</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-green-600">Masuk</a>
+                <a href="{{ route('register') }}" class="px-3 py-2 rounded-lg text-sm font-semibold bg-green-600 text-white text-center hover:bg-green-700">Daftar</a>
+            @endauth
         </div>
     </div>
 </nav>

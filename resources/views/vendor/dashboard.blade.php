@@ -25,8 +25,8 @@
         <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse inline-block"></span>
         Perlu Verifikasi Pengembalian ({{ $pendingReturns->count() }})
     </h2>
-    <div class="bg-white border border-amber-200 rounded-2xl overflow-hidden">
-        <table class="w-full text-sm">
+    <div class="bg-white border border-amber-200 rounded-2xl overflow-x-auto">
+        <table class="w-full min-w-[560px] text-sm">
             <thead class="bg-amber-50 border-b border-amber-100">
                 <tr>
                     <th class="text-left px-5 py-3 text-amber-700 font-medium">Barang</th>
@@ -65,8 +65,8 @@
             Tidak ada rental aktif saat ini.
         </div>
     @else
-        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-            <table class="w-full text-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl overflow-x-auto">
+            <table class="w-full min-w-[560px] text-sm">
                 <thead class="bg-slate-50 border-b border-slate-200">
                     <tr>
                         <th class="text-left px-5 py-3 text-slate-500 font-medium">Barang</th>

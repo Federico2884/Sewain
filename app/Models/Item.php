@@ -10,6 +10,38 @@ class Item extends Model
 {
     use HasFactory;
 
+    /**
+     * Curated marketplace categories — the single source of truth used by the
+     * landing page and catalogue. Some categories may not have items yet; they
+     * still appear so the marketplace feels complete and ready to grow.
+     *
+     * @var array<string, string> Category name => emoji icon
+     */
+    public const CATEGORIES = [
+        'Sepeda Motor' => '🏍️',
+        'Mobil' => '🚗',
+        'Kamera' => '📷',
+        'Elektronik' => '💻',
+        'Alat Kemah' => '⛺',
+        'Perkakas' => '🔧',
+        'Alat Musik' => '🎸',
+        'Sepeda' => '🚲',
+    ];
+
+    /**
+     * Emoji icon for a category name, with a sensible fallback.
+     */
+    public static function categoryIcon(?string $category): string
+    {
+        foreach (self::CATEGORIES as $name => $icon) {
+            if (strcasecmp($name, (string) $category) === 0) {
+                return $icon;
+            }
+        }
+
+        return '📦';
+    }
+
     protected $fillable = [
         'vendor_id',
         'name',
@@ -23,8 +55,8 @@ class Item extends Model
     protected function casts(): array
     {
         return [
-            'price'        => 'decimal:2',
-            'deposit'      => 'decimal:2',
+            'price' => 'decimal:2',
+            'deposit' => 'decimal:2',
             'availability' => 'boolean',
         ];
     }
@@ -54,7 +86,7 @@ class Item extends Model
             ->get()
             ->map(function (Rental $rental) {
                 $start = $rental->start;
-                $end   = $rental->expectedReturnDate();
+                $end = $rental->expectedReturnDate();
 
                 $dates = [];
                 $cursor = $start->copy();
@@ -110,8 +142,8 @@ class Item extends Model
     public function overlapsBookedDates(Carbon $start, int $duration, string $unit): bool
     {
         $end = match ($unit) {
-            'jam'   => $start->copy()->addHours($duration),
-            'hari'  => $start->copy()->addDays($duration),
+            'jam' => $start->copy()->addHours($duration),
+            'hari' => $start->copy()->addDays($duration),
             'bulan' => $start->copy()->addMonths($duration),
             default => $start->copy()->addDays($duration),
         };
@@ -119,7 +151,7 @@ class Item extends Model
         return $this->activeRentals()
             ->contains(function (Rental $rental) use ($start, $end) {
                 $otherStart = $rental->start;
-                $otherEnd   = $rental->expectedReturnDate();
+                $otherEnd = $rental->expectedReturnDate();
 
                 return ! ($end->lt($otherStart) || $start->gt($otherEnd));
             });
