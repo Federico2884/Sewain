@@ -23,6 +23,7 @@ class ItemFactory extends Factory
         return [
             'vendor_id' => Vendor::factory(),
             'name' => fake()->words(3, true),
+            'description' => fake()->paragraph(),
             'category' => fake()->randomElement(['Elektronik', 'Otomotif', 'Olahraga', 'Kamera']),
             'price' => $dailyPrice,
             'price_jam' => round($dailyPrice / 8, -2),

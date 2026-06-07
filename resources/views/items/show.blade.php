@@ -79,6 +79,13 @@
                 </div>
             </div>
 
+            @if(filled($item->description))
+                <div>
+                    <h2 class="text-sm font-semibold text-slate-700 mb-1.5">Deskripsi</h2>
+                    <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">{{ $item->description }}</p>
+                </div>
+            @endif
+
             {{-- Calendar --}}
             <div class="bg-white border border-slate-200 rounded-xl p-4" x-data="calendar({{ json_encode($bookedDates) }})">
                 <div class="flex items-center justify-between mb-3">

@@ -27,6 +27,14 @@
                            class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('name') border-red-400 @enderror">
                 </div>
 
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Deskripsi</label>
+                    <textarea name="description" rows="4"
+                              placeholder="Jelaskan kondisi, kelengkapan, atau aturan pakai barang..."
+                              class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('description') border-red-400 @enderror">{{ old('description', $item->description) }}</textarea>
+                    <p class="text-xs text-slate-400 mt-1">Opsional — bantu penyewa memahami barangmu. Maks 2000 karakter.</p>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Kategori</label>
                     <input type="text" name="category" value="{{ old('category', $item->category) }}" required list="category-options"

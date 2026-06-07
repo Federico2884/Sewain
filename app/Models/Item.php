@@ -57,6 +57,7 @@ class Item extends Model
     protected $fillable = [
         'vendor_id',
         'name',
+        'description',
         'category',
         'price',
         'price_jam',
