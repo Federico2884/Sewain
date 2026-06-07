@@ -52,6 +52,7 @@
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Harga Sewa / Hari (Rp)</label>
                     <input type="number" name="price" value="{{ old('price') }}" min="0" step="500" required
                            class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('price') border-red-400 @enderror">
+                    <p class="text-xs text-slate-400 mt-1">Wajib — harga utama yang tampil di katalog.</p>
                 </div>
 
                 <div>
@@ -59,6 +60,20 @@
                     <input type="number" name="deposit" value="{{ old('deposit') }}" min="0" step="500" required
                            class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('deposit') border-red-400 @enderror">
                     <p class="text-xs text-slate-400 mt-1">Akan disesuaikan otomatis berdasarkan rating penyewa.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Harga Sewa / Jam (Rp)</label>
+                    <input type="number" name="price_jam" value="{{ old('price_jam') }}" min="0" step="500"
+                           class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('price_jam') border-red-400 @enderror">
+                    <p class="text-xs text-slate-400 mt-1">Opsional — kosongkan jika tidak menyewakan per jam.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Harga Sewa / Bulan (Rp)</label>
+                    <input type="number" name="price_bulan" value="{{ old('price_bulan') }}" min="0" step="500"
+                           class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('price_bulan') border-red-400 @enderror">
+                    <p class="text-xs text-slate-400 mt-1">Opsional — kosongkan jika tidak menyewakan per bulan.</p>
                 </div>
 
                 <div class="sm:col-span-2">

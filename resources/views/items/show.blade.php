@@ -49,6 +49,18 @@
                     <span class="text-slate-500">Harga Sewa</span>
                     <span class="font-semibold text-slate-800">Rp {{ number_format($item->price, 0, ',', '.') }} / hari</span>
                 </div>
+                @if($item->price_jam !== null)
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Per jam</span>
+                        <span class="font-medium text-slate-600">Rp {{ number_format($item->price_jam, 0, ',', '.') }} / jam</span>
+                    </div>
+                @endif
+                @if($item->price_bulan !== null)
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Per bulan</span>
+                        <span class="font-medium text-slate-600">Rp {{ number_format($item->price_bulan, 0, ',', '.') }} / bulan</span>
+                    </div>
+                @endif
                 <div class="flex justify-between text-sm">
                     <span class="text-slate-500">Deposit</span>
                     <span class="font-semibold text-slate-800">Rp {{ number_format($item->deposit, 0, ',', '.') }}</span>

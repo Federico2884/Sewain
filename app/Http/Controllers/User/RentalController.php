@@ -29,15 +29,15 @@ class RentalController extends Controller
                 ->with('error', 'Barang ini sedang tidak tersedia untuk disewa.');
         }
 
-        $bookedDates       = $item->bookedDates();
+        $bookedDates = $item->bookedDates();
         $nextAvailableFrom = $item->nextAvailableFrom();
-        $user              = Auth::user();
-        $deposit           = round($item->deposit * $user->depositMultiplier(), 2);
+        $user = Auth::user();
+        $deposit = round($item->deposit * $user->depositMultiplier(), 2);
 
         $today = now()->toDateString();
 
         $requestedStart = $request->query('start');
-        $defaultStart   = $today;
+        $defaultStart = $today;
 
         if ($requestedStart && ! in_array($requestedStart, $bookedDates, true) && $requestedStart >= $today) {
             $defaultStart = $requestedStart;
@@ -62,9 +62,11 @@ class RentalController extends Controller
 
         $data = $request->validate([
             'duration' => ['required', 'integer', 'min:1'],
-            'unit'     => ['required', Rule::in(['jam', 'hari', 'bulan'])],
-            'start'    => ['required', 'date', 'after_or_equal:today'],
-            'method'   => ['required', Rule::in(['pickup', 'delivery'])],
+            'unit' => ['required', Rule::in(array_keys($item->offeredUnitPrices()))],
+            'start' => ['required', 'date', 'after_or_equal:today'],
+            'method' => ['required', Rule::in(['pickup', 'delivery'])],
+        ], [
+            'unit.in' => 'Durasi sewa ini tidak tersedia untuk barang tersebut.',
         ]);
 
         $this->ensureNoOverlap($item, $data['start'], (int) $data['duration'], $data['unit']);
@@ -98,10 +100,10 @@ class RentalController extends Controller
                 ->with('error', 'Barang sudah tidak tersedia.');
         }
 
-        $user          = Auth::user();
-        $rentAmount    = (float) $item->price * (int) $booking['duration'];
+        $user = Auth::user();
+        $rentAmount = $item->priceFor($booking['unit']) * (int) $booking['duration'];
         $depositAmount = round((float) $item->deposit * $user->depositMultiplier(), 2);
-        $total         = $rentAmount + $depositAmount;
+        $total = $rentAmount + $depositAmount;
 
         return view('user.rentals.payment', compact('item', 'booking', 'rentAmount', 'depositAmount', 'total'));
     }
@@ -141,13 +143,13 @@ class RentalController extends Controller
 
         $rental = DB::transaction(function () use ($item, $booking, $data) {
             $rental = Rental::create([
-                'user_id'   => Auth::id(),
+                'user_id' => Auth::id(),
                 'vendor_id' => $item->vendor_id,
-                'item_id'   => $item->id,
-                'duration'  => $booking['duration'],
-                'unit'      => $booking['unit'],
-                'start'     => $booking['start'],
-                'method'    => $booking['method'],
+                'item_id' => $item->id,
+                'duration' => $booking['duration'],
+                'unit' => $booking['unit'],
+                'start' => $booking['start'],
+                'method' => $booking['method'],
             ]);
 
             $payment = $this->payments->createForRental($rental);
@@ -172,7 +174,7 @@ class RentalController extends Controller
     private function cancelOverlappingPending(Rental $paidRental): void
     {
         $paidStart = $paidRental->start;
-        $paidEnd   = $paidRental->expectedReturnDate();
+        $paidEnd = $paidRental->expectedReturnDate();
 
         Rental::where('item_id', $paidRental->item_id)
             ->where('id', '!=', $paidRental->id)
@@ -229,11 +231,11 @@ class RentalController extends Controller
         }
 
         session()->put('booking', [
-            'item_id'  => $rental->item_id,
+            'item_id' => $rental->item_id,
             'duration' => $rental->duration,
-            'unit'     => $rental->unit,
-            'start'    => $rental->start->toDateString(),
-            'method'   => $rental->method,
+            'unit' => $rental->unit,
+            'start' => $rental->start->toDateString(),
+            'method' => $rental->method,
         ]);
 
         DB::transaction(function () use ($rental) {

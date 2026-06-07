@@ -23,7 +23,7 @@ class Rental extends Model
     protected function casts(): array
     {
         return [
-            'start'    => 'date',
+            'start' => 'date',
             'duration' => 'integer',
         ];
     }
@@ -80,8 +80,8 @@ class Rental extends Model
         $start = $this->start->copy();
 
         return match ($this->unit) {
-            'jam'   => $start->addHours($this->duration),
-            'hari'  => $start->addDays($this->duration),
+            'jam' => $start->addHours($this->duration),
+            'hari' => $start->addDays($this->duration),
             'bulan' => $start->addMonths($this->duration),
             default => $start->addDays($this->duration),
         };
@@ -96,11 +96,12 @@ class Rental extends Model
     }
 
     /**
-     * Total rental cost (price × duration).
+     * Total rental cost (unit price × duration). The price depends on the
+     * rental unit (jam/hari/bulan), each set by the vendor.
      */
     public function totalCost(): float
     {
-        return (float) ($this->item->price * $this->duration);
+        return $this->item->priceFor($this->unit) * $this->duration;
     }
 
     /**

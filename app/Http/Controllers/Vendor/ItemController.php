@@ -34,15 +34,18 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'         => ['required', 'string', 'max:255'],
-            'category'     => ['required', 'string', 'max:100'],
-            'price'        => ['required', 'numeric', 'min:0'],
-            'deposit'      => ['required', 'numeric', 'min:0'],
-            'image'        => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'name' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:100'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'price_jam' => ['nullable', 'numeric', 'min:0'],
+            'price_bulan' => ['nullable', 'numeric', 'min:0'],
+            'deposit' => ['required', 'numeric', 'min:0'],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'availability' => ['required', 'boolean'],
         ]);
 
-        $data['image']     = $request->file('image')->store('items', 'public');
+        $data = $this->normalizeUnitPrices($data, $request);
+        $data['image'] = $request->file('image')->store('items', 'public');
         $data['vendor_id'] = $this->vendor()->id;
 
         Item::create($data);
@@ -64,13 +67,17 @@ class ItemController extends Controller
         $this->authorizeItem($item);
 
         $data = $request->validate([
-            'name'         => ['required', 'string', 'max:255'],
-            'category'     => ['required', 'string', 'max:100'],
-            'price'        => ['required', 'numeric', 'min:0'],
-            'deposit'      => ['required', 'numeric', 'min:0'],
-            'image'        => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'name' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:100'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'price_jam' => ['nullable', 'numeric', 'min:0'],
+            'price_bulan' => ['nullable', 'numeric', 'min:0'],
+            'deposit' => ['required', 'numeric', 'min:0'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'availability' => ['required', 'boolean'],
         ]);
+
+        $data = $this->normalizeUnitPrices($data, $request);
 
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($item->image);
@@ -112,5 +119,21 @@ class ItemController extends Controller
     private function authorizeItem(Item $item): void
     {
         abort_if($item->vendor_id !== $this->vendor()->id, 403);
+    }
+
+    /**
+     * Coerce blank optional unit prices to null so an empty field clears the
+     * price (and hides that unit) instead of storing 0.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function normalizeUnitPrices(array $data, Request $request): array
+    {
+        foreach (['price_jam', 'price_bulan'] as $field) {
+            $data[$field] = $request->filled($field) ? $data[$field] : null;
+        }
+
+        return $data;
     }
 }

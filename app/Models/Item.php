@@ -42,11 +42,25 @@ class Item extends Model
         return '📦';
     }
 
+    /**
+     * Rental units, in display order. `hari` is always offered; `jam` and
+     * `bulan` are only offered when the vendor sets a price for them.
+     *
+     * @var array<string, string> Unit key => price column
+     */
+    public const UNIT_PRICE_COLUMNS = [
+        'jam' => 'price_jam',
+        'hari' => 'price',
+        'bulan' => 'price_bulan',
+    ];
+
     protected $fillable = [
         'vendor_id',
         'name',
         'category',
         'price',
+        'price_jam',
+        'price_bulan',
         'deposit',
         'image',
         'availability',
@@ -56,9 +70,43 @@ class Item extends Model
     {
         return [
             'price' => 'decimal:2',
+            'price_jam' => 'decimal:2',
+            'price_bulan' => 'decimal:2',
             'deposit' => 'decimal:2',
             'availability' => 'boolean',
         ];
+    }
+
+    // ── Pricing ────────────────────────────────────────────────────────────────
+
+    /**
+     * Price for a single unit of the given rental unit. Falls back to the
+     * daily price when the requested unit has no vendor-set price.
+     */
+    public function priceFor(string $unit): float
+    {
+        $column = self::UNIT_PRICE_COLUMNS[$unit] ?? 'price';
+
+        return (float) ($this->{$column} ?? $this->price);
+    }
+
+    /**
+     * Units the vendor actually offers, mapped to their price, in display
+     * order. `hari` is always present; `jam`/`bulan` only when priced.
+     *
+     * @return array<string, float>
+     */
+    public function offeredUnitPrices(): array
+    {
+        $prices = [];
+
+        foreach (self::UNIT_PRICE_COLUMNS as $unit => $column) {
+            if ($unit === 'hari' || $this->{$column} !== null) {
+                $prices[$unit] = (float) $this->{$column};
+            }
+        }
+
+        return $prices;
     }
 
     // ── Relationships ──────────────────────────────────────────────────────────

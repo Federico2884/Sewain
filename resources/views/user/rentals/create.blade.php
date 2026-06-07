@@ -98,9 +98,10 @@
                            class="w-28 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('duration') border-red-400 @enderror">
                     <select name="unit" x-model="unit"
                             class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 @error('unit') border-red-400 @enderror">
-                        <option value="jam">Jam</option>
-                        <option value="hari">Hari</option>
-                        <option value="bulan">Bulan</option>
+                        @php $unitLabels = ['jam' => 'Jam', 'hari' => 'Hari', 'bulan' => 'Bulan']; @endphp
+                        @foreach($item->offeredUnitPrices() as $unitKey => $unitPrice)
+                            <option value="{{ $unitKey }}">{{ $unitLabels[$unitKey] }} — Rp {{ number_format($unitPrice, 0, ',', '.') }}</option>
+                        @endforeach
                     </select>
                 </div>
                 @error('duration') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -136,7 +137,7 @@
             <div class="bg-slate-50 rounded-xl p-4 mb-5 space-y-2 text-sm">
                 <div class="flex justify-between text-slate-600">
                     <span>Harga sewa</span>
-                    <span>Rp {{ number_format($item->price, 0, ',', '.') }} × <span x-text="duration"></span> <span x-text="unit"></span></span>
+                    <span>Rp <span x-text="formatRupiah(unitPrices[unit] ?? 0)"></span> × <span x-text="duration"></span> <span x-text="unit"></span></span>
                 </div>
                 <div class="flex justify-between text-slate-600">
                     <span>Deposit (×{{ Auth::user()->depositMultiplier() }})</span>
@@ -169,7 +170,7 @@ function bookingForm() {
         duration: @json((int) old('duration', 1)),
         unit: @json(old('unit', 'hari')),
         method: @json(old('method', 'pickup')),
-        pricePerUnit: {{ (float) $item->price }},
+        unitPrices: @json($item->offeredUnitPrices()),
         deposit: {{ (float) $deposit }},
         year: initialDate.getFullYear(),
         month: initialDate.getMonth(),
@@ -211,7 +212,7 @@ function bookingForm() {
             this.start = day.date;
         },
         total() {
-            return this.pricePerUnit * this.duration + this.deposit;
+            return (this.unitPrices[this.unit] ?? 0) * this.duration + this.deposit;
         },
         formatRupiah(num) {
             return new Intl.NumberFormat('id-ID').format(Math.round(num));
